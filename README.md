@@ -1,6 +1,6 @@
 # Study-RabbitMQ
  
-## Install
+## Install RabbitMQ
 
 Run RabbitMQ to use docker
 
@@ -15,6 +15,16 @@ Enter the admin page
 ```
 http://localhost:15672
 ```
+
+## Install NPM Module
+
+I used `amqplib` module. is it best popular module?
+
+```sh
+npm install amqplib
+npm install @types/amqplib
+```
+
 
 ## RabbitMQ Client
 
