@@ -13,13 +13,15 @@ class AMQPClient {
   private serverAddress: string;
   private username: string;
   private password: string;
+  private vhost: string;
   private connection: any;
   private channel: any;
   
-  public async init(serverAddress: string, username: string, password: string): Promise<void> {
+  public async init(serverAddress: string, username: string, password: string, vhost: string): Promise<void> {
     this.serverAddress = serverAddress;
     this.username = username;
     this.password = password;
+    this.vhost = vhost;
     
     await this.connect();
     await this.createChannel();
@@ -53,7 +55,7 @@ class AMQPClient {
   
   private async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
-      amqp.connect(`amqp://${this.username}:${this.password}@${this.serverAddress}`, (error, connection) => {
+      amqp.connect(`amqp://${this.username}:${this.password}@${this.serverAddress}${this.vhost}`, (error, connection) => {
         if (error) {
           Debug.log(LogTag.ERROR, 'CAN_NOT_CONNECT_TO_SERVER', error);
           reject(error);
@@ -83,13 +85,26 @@ class AMQPClient {
 
 async function main() {
   const client1 = new AMQPClient();
-  await client1.init(process.env.SERVER_ADDRESS as string, process.env.USERNAME as string, process.env.PASSWORD as string);
+  await client1.init(
+    process.env.SERVER_ADDRESS as string,
+    process.env.USERNAME as string,
+    process.env.PASSWORD as string,
+    process.env.VHOST as string);
   
   const client2 = new AMQPClient();
-  await client2.init(process.env.SERVER_ADDRESS as string, process.env.USERNAME as string, process.env.PASSWORD as string);
+  await client2.init(
+    process.env.SERVER_ADDRESS as string,
+    process.env.USERNAME as string,
+    process.env.PASSWORD as string,
+    process.env.VHOST as string);
   
   const client3 = new AMQPClient();
-  await client3.init(process.env.SERVER_ADDRESS as string, process.env.USERNAME as string, process.env.PASSWORD as string);
+  await client3.init(
+    process.env.SERVER_ADDRESS as string,
+    process.env.USERNAME as string,
+    process.env.PASSWORD as string,
+    process.env.VHOST as string);
+ 
   
   client1.receiveMessage('hello', async (message) => {
     Debug.log('CLIENT1', message);
