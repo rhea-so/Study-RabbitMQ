@@ -52,7 +52,7 @@ client.sendMessage('QUEUE_NAME', 'MESSAGE_CONTENT');
 > if queue is not exist, queue will be created after enqueue the message.  
 > `MESSAGE_CONTENT` is only support string now.
 
-Get some message from queue
+Receive some message from queue
 
 ```typescript
 client.receiveMessage('QUEUE_NAME', async (message) => {
@@ -69,6 +69,10 @@ Delete the client
 ```typescript
 client.free();
 ```
+
+### Notice
+
+1. Support Ack. Ensure reliable data processing
 
 ## Support Git History
 
