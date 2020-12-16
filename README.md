@@ -1,4 +1,11 @@
 # Study-RabbitMQ
+
+## Plan
+
+1. Learn RabbitMQ
+2. Make RabbitMQ Client for Typescript
+3. Convert RabbitMQ Client Source Code to NPM Module
+4. Deploy!
  
 ## Install RabbitMQ
 
