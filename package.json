@@ -7,16 +7,23 @@
   "scripts": {
     "build": "tsc",
     "test": "tsc && node dist/test.js",
-    "start": "node dist/index.js "
+    "start": "node dist/index.js",
+    "watch": "tsc -w"
   },
   "author": "",
   "dependencies": {
+    "@types/amqplib": "^0.5.16",
     "@types/node": "^14.14.10",
+    "amqplib": "^0.6.0",
     "app-module-path": "^2.2.0",
     "colors": "^1.4.0",
+    "dotenv": "^8.2.0",
     "source-map-support": "^0.5.19"
   },
   "keywords": [
     "template"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
 }
