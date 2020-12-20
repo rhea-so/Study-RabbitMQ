@@ -2,7 +2,7 @@ import { Debug, LogTag } from '../Utils/debugTool';
 import * as amqp from 'amqplib/callback_api';
 
 
-export class AMQPClient {
+export class Client {
   private serverAddress: string;
   private username: string;
   private password: string;
