@@ -77,14 +77,14 @@ export class Client {
 		this.channel?.prefetch(maxReceiveCount); // 최대로 수용할 수 있는 메세지 수
 	}
 
-	public async enqueue(queueName: string, message: object): Promise<void> {
+	public async enqueue(queueName: string, message: any): Promise<void> {
 		const data = JSON.stringify(message);
 		this.channel?.sendToQueue(queueName, Buffer.from(data), {
 			persistent: true // RabbitMQ가 꺼져도, Queue에 데이터가 제거되지 않게 함
 		});
 	}
 
-	public dequeue(queueName: string, func: (message: object) => Promise<void> | void): void {
+	public dequeue(queueName: string, func: (message: any) => Promise<void> | void): void {
 		this.channel?.consume(queueName, async (message) => {
 			if (message && message.content) {
 				await func(JSON.parse(message.content.toString()));
@@ -94,12 +94,12 @@ export class Client {
 		});
 	}
 
-	public async publish(exchange: string, message: object): Promise<void> {
+	public async publish(exchange: string, message: any): Promise<void> {
 		const data = JSON.stringify(message);
 		this.channel?.publish(exchange, '', Buffer.from(data));
 	}
 
-	public async subscribe(exchange: string, func: (message: object) => Promise<void> | void): Promise<void> {
+	public async subscribe(exchange: string, func: (message: any) => Promise<void> | void): Promise<void> {
 		return new Promise((resolve, reject) => {
 			this.channel?.assertQueue('', { exclusive: true }, (error, queue) => {
 				if (error) {

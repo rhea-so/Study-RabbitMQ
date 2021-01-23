@@ -1,6 +1,13 @@
 {
+    "include": [
+        "src/**/*.ts"
+	],
+	"exclude": [
+		"coverage/**/*"
+	],
     "compilerOptions": {
         "outDir": "dist",
+		"baseUrl": "src",
         "module": "commonjs",
         "target": "es2017",
         "sourceMap": true,
@@ -17,9 +24,8 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "listFiles": false,
-        "baseUrl": "src",
         "esModuleInterop": true,
         "noStrictGenericChecks": false,
         "declaration": true
-    }
+	}
 }
