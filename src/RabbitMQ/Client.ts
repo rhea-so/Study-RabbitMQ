@@ -31,7 +31,7 @@ export class Client {
 	});
   }
   
-  public receiveMessage(queue: string, func: (message: string) => Promise<void> | void, maxCount: number = 1): void {
+  public receiveMessage(queue: string, func: (message: string) => Promise<void> | void, maxCount: number = 1): void {    
     this.channel.assertQueue(queue, {
         // RabbitMQ가 꺼져도, Queue가 제거되지 않게 함
 		durable: true
@@ -40,9 +40,43 @@ export class Client {
     this.channel.consume(queue, async (message) => {
       await func(message?.content?.toString());
 
-	  // ack를 보내기 전에 서버가 죽으면, RabbitMQ가 해당 메세지를 자동으로 re-queue 한다. - https://blurblah.net/1569
+	// ack를 보내기 전에 서버가 죽으면, RabbitMQ가 해당 메세지를 자동으로 re-queue 한다. - https://blurblah.net/1569
       this.channel.ack(message);
-	});
+    });
+  }
+  
+  public async sendMessageAll(exchange: string, message: string): Promise<void> {
+    this.channel.assertExchange(exchange, 'fanout', {
+      durable: false
+    });
+    this.channel.publish(exchange, '', Buffer.from(message));
+  }
+  
+  public async receiveMessageAll(exchange: string, func: (message: string) => Promise<void> | void): Promise<void> {
+    return new Promise((resolve, reject) => {
+    this.channel.assertExchange(exchange, 'fanout', {
+      durable: false
+    });
+   this.channel.assertQueue('', {
+      exclusive: true
+    }, (error2, q) => {
+      if (error2) {
+        throw error2;
+      }
+      console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
+      this.channel.bindQueue(q.queue, exchange, '');
+
+      this.channel.consume(q.queue, (msg) => {
+        if(msg.content) {
+            console.log(" [x] %s", msg.content.toString());
+          }
+      }, {
+        noAck: true
+      });
+      
+      resolve();
+    });
+    });
   }
   
   public async free(): Promise<void> {
@@ -71,6 +105,7 @@ export class Client {
           Debug.log(LogTag.ERROR, 'CAN_NOT_CREATE_CONNECTION', error);
           reject(error);
         }
+        channel.assertExchange('pubsub', 'fanout', { durable: false });
         this.channel = channel;
         resolve();
       });
